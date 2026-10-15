@@ -17,7 +17,7 @@ namespace Events
             TownWithEvents(buildings, days, fireProbability, townName);
             FireMan fireMan = new FireMan(town);
             fireMan.Subscribe();
-            Console.WriteLine("Події в місті " + townName);
+            Console.WriteLine("Events in town " + townName);
             town.TownLife();
         }
     }

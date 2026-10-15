@@ -5,8 +5,18 @@ using static Events.TownWithEvents;
 
 namespace Events
 {
-    public delegate void FireEvent
-      (int day, int building);
+    class TownEventArgs : EventArgs
+    {
+        public int Day { get; private set; }
+        public int Building { get; private set; }
+        public TownEventArgs(int day, int building)
+        {
+            Day = day;
+            Building = building;
+        }
+    }
+        public delegate void FireEvent
+          (int day, int building);
 
     internal class TownWithEvents
     {
@@ -16,7 +26,7 @@ namespace Events
         Random random;                  // генератор випадкових чисел
         public string TownName { get; private set; } // н
 
-        public event FireEvent fireEvent;
+        EventHandler<TownEventArgs> fireEvent;
         public TownWithEvents(int buildings, int days, double fireProbability, string name)
         {
             this.buildings = buildings;
@@ -29,7 +39,7 @@ namespace Events
         {
             if (fireEvent != null)
             {
-                fireEvent(day, building);
+                fireEvent(this, new TownEventArgs(day, building));
             }
         }
         public void TownLife()
@@ -54,9 +64,10 @@ namespace Events
                 MyNativeTown = town;
 
             }
-            public void FireHandler(int day, int building)
+            public void FireHandler(object town, TownEventArgs args)
             {
-                Console.WriteLine("Fire in " + MyNativeTown + "day:" + day + "Building:" + building);
+                MyNativeTown = (TownWithEvents)town;
+                Console.WriteLine("Fire in " + MyNativeTown.TownName + ", day: " + args.Day + ", building: " + args.Building);
             }
             public void Subscribe()
             {
